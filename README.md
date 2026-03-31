@@ -9,6 +9,8 @@ This repository provides a github workflow that:
 
 The workflow is triggered by a schedule (every 24h) and by pull requests to the `main` branch.
 
+Here is the link to the latest [vocabularies.db](https://github.com/par-tec/dati-semantic-harvest/raw/refs/heads/harvest/vocabularies.db).
+
 ## Testing
 
 You can test this workflow locally using [act](https://github.com/nektos/act) and the `harvest` branch, which is used by the workflow to store the harvested data. For example:
