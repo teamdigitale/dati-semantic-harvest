@@ -5,11 +5,11 @@ This repository provides a github workflow that:
 1. harvest sqlite data from a list of repositories (see `harvest.yml` workflow);
 1. aggregates the harvested data into a vocabularies.db;
 1. publishes the vocabularies.db so that it can be used by the Data API
-   published via [dati-semantic-csv-apis](https://github.com/par-tec/dati-semantic-csv-apis).
+   published via [dati-semantic-csv-apis](https://github.com/teamdigitale/dati-semantic-csv-apis).
 
 The workflow is triggered by a schedule (every 24h) and by pull requests to the `main` branch.
 
-Here is the link to the latest [vocabularies.db](https://github.com/par-tec/dati-semantic-harvest/raw/refs/heads/harvest/vocabularies.db).
+Here is the link to the latest [vocabularies.db](https://github.com/teamdigitale/dati-semantic-harvest/raw/refs/heads/harvest/vocabularies.db).
 
 ## Testing
 
