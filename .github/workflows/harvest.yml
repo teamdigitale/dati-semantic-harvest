@@ -35,7 +35,7 @@ jobs:
         set -e
         ARTIFACT_URL=https://github.com/teamdigitale/dati-semantic-csv-apis/releases/download/${{ env.CLI_VERSION }}/schema_gov_it_tools.bin
 
-        curl -L \
+        curl -fL --show-error \
           "${ARTIFACT_URL}" \
           -o /usr/local/bin/schema_gov_it_tools.bin
 
