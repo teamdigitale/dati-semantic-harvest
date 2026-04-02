@@ -2,21 +2,26 @@ import argparse
 import json
 import logging
 
-from .catalog import Catalog, get_value, remote_resource_exists
+from .catalog import Catalog, remote_resource_exists
 
 
 URL_TRANSLATIONS = (
     (
-        "https://raw.githubusercontent.com/italia/dati-semantic-assets/master/VocabolariControllati",
-        "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets/assets/controlled-vocabularies",
+        "https://raw.githubusercontent.com/italia/dati-semantic-assets/master/VocabolariControllati/",
+        "https://github.com/EricaCandido/dati-semantic-assets/raw/refs/heads/assets/VocabolariControllati/",
+        # "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets/assets/controlled-vocabularies/",
     ),
     (
         "https://raw.githubusercontent.com/InailUfficio5/inail-ndc/main/",
-        "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets",
+        "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets/",
     ),
     (
         "https://raw.githubusercontent.com/INPS-it/NDC/main/",
-        "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets",
+        "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets/",
+    ),
+    (
+        "https://github.com/istat/ndc-ontologie-vocabolari-controllati/tree/main/assets/controlled-vocabularies/economy/",
+        "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/main/assets/controlled-vocabularies/",
     ),
 )
 
@@ -40,18 +45,37 @@ def build_parser() -> argparse.ArgumentParser:
         default="WARNING",
         help="Logging level for catalog loading and validation.",
     )
+    parser.add_argument(
+        "--filter",
+        help="Filter repositories by a specific keyword.",
+    )
     return parser
 
 
-def list_remote_repositories(catalog: Catalog) -> list[str]:
+def list_remote_repositories(
+    catalog: Catalog, filter_keyword: str | None = None
+) -> list[str]:
     repositories = set()
-    for node in catalog.items():
-        if url := node.get("turtleDownloadUrl"):
-            url = get_value(url)
-            for src, dst in URL_TRANSLATIONS:
-                url = url.replace(src, dst)
-            if remote_resource_exists(url):
-                repositories.add(url)
+
+    def _get_items():
+        for item in catalog.items():
+            url_value = item.get("turtleDownloadUrl")
+            if isinstance(url_value, list):
+                yield from url_value
+            elif isinstance(url_value, str):
+                yield url_value
+
+    items: set[str] = {
+        url for url in _get_items() if not filter_keyword or filter_keyword in url
+    }
+    for url in items:
+        logging.warning(f"Processing repository URL: {url}")
+
+        for src, dst in URL_TRANSLATIONS:
+            url = url.replace(src, dst)
+        db_url = url[:-4] + ".db"
+        if remote_resource_exists(db_url):
+            repositories.add(db_url)
     return sorted(repositories)
 
 
@@ -62,7 +86,7 @@ def main() -> int:
     logging.basicConfig(level=getattr(logging, args.log_level.upper(), logging.WARNING))
 
     catalog = Catalog(args.sparql_url)
-    repositories = list_remote_repositories(catalog)
+    repositories = list_remote_repositories(catalog, filter_keyword=args.filter)
 
     if args.format == "text":
         for repository in repositories:

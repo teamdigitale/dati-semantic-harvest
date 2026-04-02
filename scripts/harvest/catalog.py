@@ -3,10 +3,7 @@ import logging
 import urllib.parse
 import urllib.error
 import urllib.request
-from pathlib import Path
 from typing import Any, cast
-
-import yaml
 
 log = logging.getLogger(__name__)
 
@@ -211,46 +208,6 @@ def transform_sparql_to_linkset_items(sparql_results: dict, base_url: str) -> di
         log.warning("Missing %d generated remote resources", len(missing_resources))
 
     return schemes
-
-
-def load_linkset_data(datafile: str) -> dict[str, Any]:
-    """
-    Load linkset data from the configured YAML file.
-
-    This function is called once at app initialization to load
-    the vocabularies linkset into memory for efficient serving.
-
-    Returns:
-        The parsed linkset data structure.
-
-    Raises:
-        FileNotFoundError: If the data file cannot be found.
-        yaml.YAMLError: If the YAML file is malformed.
-    """
-
-    datafile_path = Path(datafile)
-
-    if not datafile_path.is_file():
-        if datafile_path.is_absolute():
-            raise FileNotFoundError(f"Data file not found: {datafile_path}")
-        # Try resolving relative path
-        datafile_path = datafile_path.resolve()
-        if not datafile_path.is_file():
-            raise FileNotFoundError(f"Data file not found: {datafile_path}")
-
-    log.info(f"Loading vocabularies dataset from: {datafile_path}")
-
-    with open(datafile_path, encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-
-    if not isinstance(data, dict) or "linkset" not in data:
-        raise ValueError(f"Invalid linkset format in {datafile_path}")
-
-    log.info(
-        f"Loaded {len(data.get('linkset', [{}])[0].get('item', []))} vocabulary items"
-    )
-
-    return data
 
 
 def sparql_query_vocabularies(sparql_url: str) -> dict:

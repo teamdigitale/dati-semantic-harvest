@@ -30,6 +30,18 @@ jobs:
     permissions:
       contents: write
     steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      # if: github.event_name != 'pull_request'
+      with:
+        persist-credentials: false
+
+    - name: List repositories to harvest
+      id: list-repos
+      shell: bash
+      run: |
+        /usr/bin/python3 -m scripts.harvest https://schema.gov.it/sparql --format text 1> repositories.txt
+
+        cat repositories.txt
     - name: Download schema_gov_it_tools.bin
       run: |
         set -e
@@ -41,17 +53,6 @@ jobs:
 
         chmod +x /usr/local/bin/schema_gov_it_tools.bin
         /usr/local/bin/schema_gov_it_tools.bin --version
-
-    - name: List repositories to harvest
-      id: list-repos
-      shell: bash
-      run: |
-        cat > repositories.txt << 'EOF'
-        https://github.com/teamdigitale/dati-semantic-csv-apis/raw/refs/heads/main/assets/controlled-vocabularies/provinces/provinces.db
-        https://github.com/teamdigitale/dati-semantic-csv-apis/raw/refs/heads/main/assets/controlled-vocabularies/ateco-2025/ateco-2025.db
-        https://github.com/EricaCandido/dati-semantic-assets/raw/refs/heads/assets/VocabolariControllati/territorial-classifications/cities/datapackages/cities/cities.db
-        https://github.com/EricaCandido/dati-semantic-assets/raw/refs/heads/assets/VocabolariControllati/classifications-for-universities/academic-disciplines/datapackages/academic-disciplines.db
-        EOF
 
     - name: Harvest vocabularies
       id: harvest
