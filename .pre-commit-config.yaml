@@ -71,14 +71,7 @@ repos:
   - id: mypy
     name: mypy (root)
     additional_dependencies: [types-PyYAML]
-    exclude: ^(tests/|apiv1/)
-  - id: mypy
-    name: mypy (apiv1)
-    additional_dependencies: [types-PyYAML]
-    pass_filenames: false
-    exclude: ^(tests/|tools|openapi)
-    entry: >-
-      bash -c 'cd apiv1 && mypy -p common -p vocabularies --ignore-missing-imports' --
+    exclude: ^(tests/)
 #
 # Generators.
 #
