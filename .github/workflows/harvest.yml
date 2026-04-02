@@ -50,6 +50,7 @@ jobs:
         https://github.com/teamdigitale/dati-semantic-csv-apis/raw/refs/heads/main/assets/controlled-vocabularies/provinces/provinces.db
         https://github.com/teamdigitale/dati-semantic-csv-apis/raw/refs/heads/main/assets/controlled-vocabularies/ateco-2025/ateco-2025.db
         https://github.com/EricaCandido/dati-semantic-assets/raw/refs/heads/assets/VocabolariControllati/territorial-classifications/cities/datapackages/cities/cities.db
+        https://github.com/EricaCandido/dati-semantic-assets/raw/refs/heads/assets/VocabolariControllati/classifications-for-universities/academic-disciplines/datapackages/academic-disciplines.db
         EOF
 
     - name: Harvest vocabularies
