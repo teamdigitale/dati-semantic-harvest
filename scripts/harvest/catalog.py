@@ -261,7 +261,7 @@ def sparql_query_vocabularies(sparql_url: str) -> dict:
             ?scheme
             NDC:keyConcept ?keyConcept
             ; dcterms:rightsHolder ?publisher
-            ; skos:prefLabel ?title
+            ; (skos:prefLabel|rdfs:label) ?title
             ; dcat:distribution ?distribution
             .
             ?distribution

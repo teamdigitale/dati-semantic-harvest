@@ -5,25 +5,28 @@ import logging
 from .catalog import Catalog, remote_resource_exists
 
 
-URL_TRANSLATIONS = (
-    (
-        "https://raw.githubusercontent.com/italia/dati-semantic-assets/master/VocabolariControllati/",
-        "https://github.com/EricaCandido/dati-semantic-assets/raw/refs/heads/assets/VocabolariControllati/",
-        # "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets/assets/controlled-vocabularies/",
-    ),
-    (
-        "https://raw.githubusercontent.com/InailUfficio5/inail-ndc/main/",
-        "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets/",
-    ),
-    (
-        "https://raw.githubusercontent.com/INPS-it/NDC/main/",
-        "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets/",
-    ),
-    (
-        "https://github.com/istat/ndc-ontologie-vocabolari-controllati/tree/main/assets/controlled-vocabularies/economy/",
-        "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/main/assets/controlled-vocabularies/",
-    ),
-)
+URL_TRANSLATIONS = [
+    {
+        "description": "Ontopia: cities, provinces, ateco-2007, subject-disciplines",
+        "src": "https://raw.githubusercontent.com/italia/dati-semantic-assets/master/VocabolariControllati/",
+        "dst": "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets/assets/controlled-vocabularies/",
+    },
+    {
+        "description": "Inail: NDC",
+        "src": "https://raw.githubusercontent.com/InailUfficio5/inail-ndc/main/",
+        "dst": "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets/",
+    },
+    {
+        "description": "Inps: NDC",
+        "src": "https://raw.githubusercontent.com/INPS-it/NDC/main/",
+        "dst": "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets/",
+    },
+    {
+        "description": "Istat: economy vocabularies",
+        "src": "https://github.com/istat/ndc-ontologie-vocabolari-controllati/tree/main/",
+        "dst": "https://raw.githubusercontent.com/teamdigitale/dati-semantic-csv-apis/assets/",
+    },
+]
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -71,8 +74,8 @@ def list_remote_repositories(
     for url in items:
         logging.warning(f"Processing repository URL: {url}")
 
-        for src, dst in URL_TRANSLATIONS:
-            url = url.replace(src, dst)
+        for translation in URL_TRANSLATIONS:
+            url = url.replace(translation["src"], translation["dst"])
         db_url = url[:-4] + ".db"
         if remote_resource_exists(db_url):
             repositories.add(db_url)
