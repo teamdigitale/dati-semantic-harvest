@@ -24,7 +24,7 @@ on:
     - scripts
 env:
   CI: true
-  CLI_VERSION: '0.0.11'
+  CLI_VERSION: '0.0.13'
   BRANCH: harvest
 jobs:
   harvest:
